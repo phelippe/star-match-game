@@ -12,9 +12,9 @@ function App() {
   const candidadtesAreWrong = utils.sum(candidateNums) > stars;
 
   const numberStatus = (number) => {
-    if(!availableNums.includes(number)) {
+    if (!availableNums.includes(number)) {
       return 'used';
-    } 
+    }
     if (candidateNums.includes(number)) {
       return candidadtesAreWrong ? 'wrong' : 'candidate';
     }
@@ -22,8 +22,24 @@ function App() {
     return 'available';
   };
 
-  const onNumberClick = (number) => {
-    
+  const onNumberClick = (number, currentStatus) => {
+    if (currentStatus === 'used') {
+      return;
+    }
+
+    const newCandidateNumbers = candidateNums.concat(number);
+    if (utils.sum(newCandidateNumbers) !== stars) {
+      setCandidateNums(newCandidateNumbers);
+    } else {
+      const newAvailableNums = availableNums.filter(
+        n => !newCandidateNumbers.includes(n)
+      );
+      //redraw stars (from what's available)
+      setStars(utils.randomSumIn(newAvailableNums, 9));
+
+      setAvailableNums(newAvailableNums);
+      setCandidateNums([]);
+    }
   };
 
   return (
@@ -37,12 +53,13 @@ function App() {
         </div>
         <div className="right">
           {utils.range(1, 9).map(number =>
-              <PlayNumber 
-                key={number} 
-                number={number} 
-                status={numberStatus(number)}
-                />
-            )}
+            <PlayNumber
+              key={number}
+              number={number}
+              status={numberStatus(number)}
+              onClick={onNumberClick}
+            />
+          )}
         </div>
       </div>
     </div>
