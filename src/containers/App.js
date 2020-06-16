@@ -6,8 +6,25 @@ import StarsDisplay from '../components/StarsDisplay';
 
 function App() {
   const [stars, setStars] = useState(utils.random(1, 9));
-  // candidateNums
-  // availableNums
+  const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
+  const [candidateNums, setCandidateNums] = useState([]);
+
+  const candidadtesAreWrong = utils.sum(candidateNums) > stars;
+
+  const numberStatus = (number) => {
+    if(!availableNums.includes(number)) {
+      return 'used';
+    } 
+    if (candidateNums.includes(number)) {
+      return candidadtesAreWrong ? 'wrong' : 'candidate';
+    }
+
+    return 'available';
+  };
+
+  const onNumberClick = (number) => {
+    
+  };
 
   return (
     <div className="game">
@@ -20,7 +37,11 @@ function App() {
         </div>
         <div className="right">
           {utils.range(1, 9).map(number =>
-              <PlayNumber key={number} number={number} />
+              <PlayNumber 
+                key={number} 
+                number={number} 
+                status={numberStatus(number)}
+                />
             )}
         </div>
       </div>
