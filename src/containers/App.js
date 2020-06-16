@@ -27,7 +27,11 @@ function App() {
       return;
     }
 
-    const newCandidateNumbers = candidateNums.concat(number);
+    const newCandidateNumbers = 
+      currentStatus === 'available'
+      ? candidateNums.concat(number)
+      : candidateNums.filter(cn => cn !==number);
+    
     if (utils.sum(newCandidateNumbers) !== stars) {
       setCandidateNums(newCandidateNumbers);
     } else {
