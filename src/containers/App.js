@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
+import utils from '../hoc/utils';
 import PlayNumber from '../components/PlayNumber';
+import StarsDisplay from '../components/StarsDisplay';
 
 function App() {
+  const [stars, setStars] = useState(utils.random(1, 9));
+  // candidateNums
+  // availableNums
+
   return (
     <div className="game">
       <div className="help">
@@ -10,7 +16,7 @@ function App() {
       </div>
       <div className="body">
         <div className="left">
-
+          <StarsDisplay count={stars} />
         </div>
         <div className="right">
           {utils.range(1, 9).map(number =>
@@ -21,35 +27,5 @@ function App() {
     </div>
   );
 }
-
-// Math science
-const utils = {
-  // Sum an array
-  sum: arr => arr.reduce((acc, curr) => acc + curr, 0),
-
-  // create an array of numbers between min and max (edges included)
-  range: (min, max) => Array.from({ length: max - min + 1 }, (_, i) => min + i),
-
-  // pick a random number between min and max (edges included)
-  random: (min, max) => min + Math.floor(Math.random() * (max - min + 1)),
-
-  // Given an array of numbers and a max...
-  // Pick a random sum (< max) from the set of all available sums in arr
-  randomSumIn: (arr, max) => {
-    const sets = [[]];
-    const sums = [];
-    for (let i = 0; i < arr.length; i++) {
-      for (let j = 0, len = sets.length; j < len; j++) {
-        const candidateSet = sets[j].concat(arr[i]);
-        const candidateSum = utils.sum(candidateSet);
-        if (candidateSum <= max) {
-          sets.push(candidateSet);
-          sums.push(candidateSum);
-        }
-      }
-    }
-    return sums[utils.random(0, sums.length - 1)];
-  },
-};
 
 export default App;
