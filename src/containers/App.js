@@ -1,15 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import utils from '../hoc/utils';
 import PlayNumber from '../components/PlayNumber';
 import StarsDisplay from '../components/StarsDisplay';
+import PlayAgain from '../components/PlayAgain';
 
 function App() {
   const [stars, setStars] = useState(utils.random(1, 9));
   const [availableNums, setAvailableNums] = useState(utils.range(1, 9));
   const [candidateNums, setCandidateNums] = useState([]);
+  const [secondsLeft, setSecondsLeft] = useState(10);
+
+  useEffect(() => {
+    if (secondsLeft > 0) {
+      setTimeout(() => {
+        setSecondsLeft(secondsLeft - 1)
+      }, 1000);
+    }
+  });
 
   const candidadtesAreWrong = utils.sum(candidateNums) > stars;
+  const gameIsDone = availableNums.length === 0;
+
+  const resetGame = () => {
+    setStars(utils.random(1, 9));
+    setAvailableNums(utils.range(1, 9));
+    setCandidateNums([]);
+  };
 
   const numberStatus = (number) => {
     if (!availableNums.includes(number)) {
@@ -27,11 +44,11 @@ function App() {
       return;
     }
 
-    const newCandidateNumbers = 
+    const newCandidateNumbers =
       currentStatus === 'available'
-      ? candidateNums.concat(number)
-      : candidateNums.filter(cn => cn !==number);
-    
+        ? candidateNums.concat(number)
+        : candidateNums.filter(cn => cn !== number);
+
     if (utils.sum(newCandidateNumbers) !== stars) {
       setCandidateNums(newCandidateNumbers);
     } else {
@@ -53,7 +70,15 @@ function App() {
       </div>
       <div className="body">
         <div className="left">
-          <StarsDisplay count={stars} />
+          {
+            gameIsDone ? (
+              //play again loginc
+              <PlayAgain onClick={resetGame} />
+            ) : (
+                <StarsDisplay count={stars} />
+              )
+          }
+
         </div>
         <div className="right">
           {utils.range(1, 9).map(number =>
@@ -66,6 +91,7 @@ function App() {
           )}
         </div>
       </div>
+      <div className="timer">Time Remaining: {secondsLeft}</div>
     </div>
   );
 }
